@@ -18,9 +18,9 @@ router.post('/', checkLogin, function (req, res, next) {
     if (age == '' || mailbox == '' || introduction == '' || address == '' || account == '') {
       throw new Error('字段不能为空！')
     }
-    if (/[\u4e00-\u9fa5]+/.test(account)) {
-      throw new Error('账号不能为中文！')
-    }
+    // if (/[\u4e00-\u9fa5]+/.test(account)) {
+    //   throw new Error('账号不能为中文！')
+    // }
     if (age < 0 || age > 100) {
       throw new Error('年龄超出范围')
     }

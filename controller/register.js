@@ -14,9 +14,9 @@ router.post('/', checkNotLogin, function (req, res, next) {
     if (account == '' || password == '') {
       throw new Error('字段不能为空！')
     }
-    if (/[\u4e00-\u9fa5]+/.test(account)) {
-      throw new Error('账号不能为中文！')
-    }
+    // if (/[\u4e00-\u9fa5]+/.test(account)) {
+    //   throw new Error('账号不能为中文！')
+    // }
 
   } catch (e) {
     res.json({"result": "failed", "reason": e.message});

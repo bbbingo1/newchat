@@ -5,7 +5,7 @@ const sha1 = require('sha1')
 const userModel = require('../models/userModel')
 const checkNotLogin = require('../middlewares/check').checkNotLogin
 
-router.post('/', checkNotLogin, function (req, res, next) {
+router.post('/', function (req, res, next) {
   const account = req.body.account
   let password = req.body.password
 
@@ -14,9 +14,9 @@ router.post('/', checkNotLogin, function (req, res, next) {
     if (account == '' || password == '') {
       throw new Error('字段不能为空！')
     }
-    if (/[\u4e00-\u9fa5]+/.test(account)) {
-      throw new Error('账号不能为中文！')
-    }
+    // if (/[\u4e00-\u9fa5]+/.test(account)) {
+    //   throw new Error('账号不能为中文！')
+    // }
   }
   catch (e) {
     res.json({ "result": "failed", "reason": e.message })
@@ -35,19 +35,34 @@ router.post('/', checkNotLogin, function (req, res, next) {
         "reason": "账号不存在"
       })
       return;
-    }
-    if (user.password != password) {
-      res.json({
-        "result": "failed",
-        "reason": "账号或密码错误"
-      })
-      return;
-    }
-    //登录成功
-    else {
-      req.session.userid = user._id;
-      res.json({ "result": "success", "userid": user._id })
-      return;
+    } else {
+      if (req.session.userid) {
+        console.log(req.session.userid,user._id)
+        if(req.session.userid!= user._id){
+          res.json({
+            "result": "failed",
+            "reason": "已登录其他账号"
+          })
+          return;
+        }
+        else{
+          res.json({ "result": "success", "userid": user._id})
+        }
+      } else {
+        if (user.password != password) {
+          res.json({
+            "result": "failed",
+            "reason": "账号或密码错误"
+          })
+          return;
+        }
+        //登录成功
+        else {
+          req.session.userid = user._id;
+          res.json({ "result": "success", "userid": user._id })
+          return;
+        }
+      }
     }
   })
 
